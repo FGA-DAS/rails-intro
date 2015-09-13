@@ -11,6 +11,10 @@ class MoviesController < ApplicationController
     sort_opt = params[:sort]
 
     sort(sort_opt) if sort_opt == "movie_title" || sort_opt = "release_date"
+
+    @movie_header='hilite' if sort_opt == "movie_title"
+    @release_header='hilite' if sort_opt == 'release_date'
+
   end
 
   def sort(sort_opt)
