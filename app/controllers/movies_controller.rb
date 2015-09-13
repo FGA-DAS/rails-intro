@@ -16,7 +16,7 @@ class MoviesController < ApplicationController
   def sort(sort_opt)
   
     @movies.sort!{ |a,b| a.title <=> b.title } if sort_opt == "movie_title"
-    @movies.sort!{ |a,b| a.relase_date <=> b.release_data } if sort_opt == "release_data"
+    @movies.sort!{ |a,b| a.release_date <=> b.release_date } if sort_opt == "release_date"
 
   end
 
