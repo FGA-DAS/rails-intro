@@ -7,10 +7,29 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @selected_ratings = params[:ratings] || {}
-    sort_opt = params[:sort] || ""
 
-    if !@selected_ratings.empty? 
+    should_redirect = false
+
+    sort_opt = nil
+    if params.has_key?(:sort)
+      sort_opt = params[:sort]
+      session[:sort] = params[:sort]
+    elsif session.has_key?(:sort)
+      sort_opt = session[:sort]
+      should_redirect = true
+    end
+  
+    @selected_ratings = {}
+    if params.has_key?(:ratings)
+        @selected_ratings = params[:ratings]
+    elsif session.has_key?(:ratings)
+        @selected_ratings = session[:ratings]
+        should_redirect = true
+    end
+
+    session[:ratings] = @selected_ratings
+
+    if !@selected_ratings.empty?
       @movies = Movie.where(rating: @selected_ratings.keys)
     else
       @movies = Movie.all
@@ -21,6 +40,11 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.all_ratings
     @movie_header='hilite' if sort_opt == "movie_title"
     @release_header='hilite' if sort_opt == 'release_date'
+
+    if should_redirect
+      flash.keep
+      redirect_to movies_path( {:sort => sort_opt, :ratings => @selected_ratings}) 
+    end
 
   end
 
